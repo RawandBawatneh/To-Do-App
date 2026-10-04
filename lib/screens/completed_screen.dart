@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:to_do_app/app_string.dart';
 import 'package:to_do_app/models/task_model.dart';
+import 'package:to_do_app/widgets/custom_task_item.dart';
 
 class CompletedScreen extends StatefulWidget {
   const CompletedScreen({super.key});
@@ -18,7 +19,6 @@ class _CompletedScreenState extends State<CompletedScreen> {
   @override
   void initState() {
     super.initState();
-
     loadCompletedTasks();
   }
 
@@ -46,7 +46,10 @@ class _CompletedScreenState extends State<CompletedScreen> {
     await task.save();
 
     setState(() {
-      expandedTask = null;
+      if (expandedTask == task) {
+        expandedTask = null;
+      }
+
       loadCompletedTasks();
     });
   }
@@ -93,6 +96,30 @@ class _CompletedScreenState extends State<CompletedScreen> {
     });
   }
 
+  Widget getTaskItem(
+    TaskModel task,
+  ) {
+    return CustomTaskItem(
+      task: task,
+      showDescription: expandedTask == task,
+      onTitleTap: () {
+        changeDescriptionVisibility(
+          task,
+        );
+      },
+      onStatusChanged: () {
+        handleTaskStatus(
+          task,
+        );
+      },
+      onDelete: () {
+        handleDeleteTask(
+          task,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,98 +155,8 @@ class _CompletedScreenState extends State<CompletedScreen> {
                 ) {
                   final task = completedTasks[index];
 
-                  return Container(
-                    padding: const EdgeInsets.all(
-                      14,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).dividerColor,
-                      ),
-                      borderRadius: BorderRadius.circular(
-                        14,
-                      ),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Checkbox(
-                          value: true,
-                          onChanged: (value) {
-                            handleTaskStatus(
-                              task,
-                            );
-                          },
-                          activeColor: const Color(
-                            0xff15B86C,
-                          ),
-                        ),
-
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  changeDescriptionVisibility(
-                                    task,
-                                  );
-                                },
-                                child: Text(
-                                  task.title,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey,
-                                    decoration:
-                                        TextDecoration.lineThrough,
-                                  ),
-                                ),
-                              ),
-
-                              if (task.isHighPriority)
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 5,
-                                  ),
-                                  child: Text(
-                                    'High Priority',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-
-                              if (expandedTask == task)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 8,
-                                  ),
-                                  child: Text(
-                                    task.description,
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-
-                        IconButton(
-                          onPressed: () {
-                            handleDeleteTask(
-                              task,
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.delete_outline,
-                          ),
-                        ),
-                      ],
-                    ),
+                  return getTaskItem(
+                    task,
                   );
                 },
               ),

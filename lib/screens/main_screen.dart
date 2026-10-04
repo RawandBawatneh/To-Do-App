@@ -3,6 +3,7 @@ import 'package:to_do_app/screens/completed_screen.dart';
 import 'package:to_do_app/screens/home_screen.dart';
 import 'package:to_do_app/screens/profile_screen.dart';
 import 'package:to_do_app/screens/todo_screen.dart';
+import 'package:to_do_app/widgets/custom_bottom_nav_bar.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -36,57 +37,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: getScreen(),
-
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CustomBottomNavBar(
         currentIndex: selectedIndex,
         onTap: changeScreen,
-
-        selectedItemColor: const Color(0xff15B86C),
-        unselectedItemColor: Colors.grey,
-
-        type: BottomNavigationBarType.fixed,
-
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home_outlined,
-            ),
-            activeIcon: Icon(
-              Icons.home,
-            ),
-            label: 'Home',
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.list_alt_outlined,
-            ),
-            activeIcon: Icon(
-              Icons.list_alt,
-            ),
-            label: 'To Do',
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.check_circle_outline,
-            ),
-            activeIcon: Icon(
-              Icons.check_circle,
-            ),
-            label: 'Completed',
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person_outline,
-            ),
-            activeIcon: Icon(
-              Icons.person,
-            ),
-            label: 'Profile',
-          ),
-        ],
       ),
     );
   }

@@ -10,11 +10,23 @@ void main() async {
 
   await Hive.initFlutter();
 
-  Hive.registerAdapter(UserModelAdapter());
-  Hive.registerAdapter(TaskModelAdapter());
+  Hive.registerAdapter(
+    UserModelAdapter(),
+  );
 
-  await Hive.openBox<UserModel>(AppString.userBox);
-  await Hive.openBox<TaskModel>(AppString.taskBox);
+  Hive.registerAdapter(
+    TaskModelAdapter(),
+  );
 
-  runApp(const Tasky());
+  await Hive.openBox<UserModel>(
+    AppString.userBox,
+  );
+
+  await Hive.openBox<TaskModel>(
+    AppString.taskBox,
+  );
+
+  runApp(
+    const Tasky(),
+  );
 }

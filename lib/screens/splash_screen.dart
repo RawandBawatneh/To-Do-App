@@ -24,7 +24,9 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 3),
     );
 
-    final userBox = Hive.box<UserModel>(AppString.userBox);
+    final userBox = Hive.box<UserModel>(
+      AppString.userBox,
+    );
 
     if (!mounted) return;
 
@@ -32,14 +34,18 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const MainScreen(),
+          builder: (context) {
+            return const MainScreen();
+          },
         ),
       );
     } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const WelcomeScreen(),
+          builder: (context) {
+            return const WelcomeScreen();
+          },
         ),
       );
     }
@@ -51,8 +57,8 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Image.asset(
           'assets/images/tasky_logo.png',
-          width: 50,
-          height: 50,
+          width: 60,
+          height: 60,
         ),
       ),
     );

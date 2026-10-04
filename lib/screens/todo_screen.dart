@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:to_do_app/app_string.dart';
 import 'package:to_do_app/models/task_model.dart';
+import 'package:to_do_app/widgets/custom_task_item.dart';
 
 class TodoScreen extends StatefulWidget {
   const TodoScreen({super.key});
@@ -18,7 +19,6 @@ class _TodoScreenState extends State<TodoScreen> {
   @override
   void initState() {
     super.initState();
-
     loadTodoTasks();
   }
 
@@ -46,7 +46,10 @@ class _TodoScreenState extends State<TodoScreen> {
     await task.save();
 
     setState(() {
-      expandedTask = null;
+      if (expandedTask == task) {
+        expandedTask = null;
+      }
+
       loadTodoTasks();
     });
   }
@@ -93,6 +96,30 @@ class _TodoScreenState extends State<TodoScreen> {
     });
   }
 
+  Widget getTaskItem(
+    TaskModel task,
+  ) {
+    return CustomTaskItem(
+      task: task,
+      showDescription: expandedTask == task,
+      onTitleTap: () {
+        changeDescriptionVisibility(
+          task,
+        );
+      },
+      onStatusChanged: () {
+        handleTaskStatus(
+          task,
+        );
+      },
+      onDelete: () {
+        handleDeleteTask(
+          task,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,92 +155,8 @@ class _TodoScreenState extends State<TodoScreen> {
                 ) {
                   final task = todoTasks[index];
 
-                  return Container(
-                    padding: const EdgeInsets.all(
-                      14,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).dividerColor,
-                      ),
-                      borderRadius: BorderRadius.circular(
-                        14,
-                      ),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Checkbox(
-                          value: false,
-                          onChanged: (value) {
-                            handleTaskStatus(
-                              task,
-                            );
-                          },
-                          activeColor: const Color(
-                            0xff15B86C,
-                          ),
-                        ),
-
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  changeDescriptionVisibility(
-                                    task,
-                                  );
-                                },
-                                child: Text(
-                                  task.title,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-
-                              if (task.isHighPriority)
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 5,
-                                  ),
-                                  child: Text(
-                                    'High Priority',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-
-                              if (expandedTask == task)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 8,
-                                  ),
-                                  child: Text(
-                                    task.description,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-
-                        IconButton(
-                          onPressed: () {
-                            handleDeleteTask(
-                              task,
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.delete_outline,
-                          ),
-                        ),
-                      ],
-                    ),
+                  return getTaskItem(
+                    task,
                   );
                 },
               ),

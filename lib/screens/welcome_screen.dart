@@ -3,6 +3,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:to_do_app/app_string.dart';
 import 'package:to_do_app/models/user_model.dart';
 import 'package:to_do_app/screens/main_screen.dart';
+import 'package:to_do_app/widgets/custom_button.dart';
+import 'package:to_do_app/widgets/custom_text_field.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -16,13 +18,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
- Future<void> getStarted() async {
-  if (formKey.currentState!.validate()) {
-    final userBox = Hive.box<UserModel>(AppString.userBox);
+  String? validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter your name';
+    }
+
+    return null;
+  }
+
+  Future<void> getStarted() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
+    final userBox = Hive.box<UserModel>(
+      AppString.userBox,
+    );
 
     await userBox.add(
       UserModel(
-        name: fullNameController.text,
+        name: fullNameController.text.trim(),
         motivationQuote: 'One task at a time. One step closer.',
         imagePath: '',
       ),
@@ -33,12 +48,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => const MainScreen(),
+        builder: (context) {
+          return const MainScreen();
+        },
       ),
       (route) => false,
     );
   }
-}
 
   @override
   void dispose() {
@@ -51,29 +67,30 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 18,
-            vertical: 20,
+          padding: const EdgeInsets.all(
+            20,
           ),
           child: Form(
             key: formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
                       'assets/images/tasky_logo.png',
-                      width: 40,
-                      height: 40,
+                      width: 36,
+                      height: 36,
                     ),
-                    const SizedBox(width: 10),
+
+                    const SizedBox(
+                      width: 8,
+                    ),
+
                     const Text(
-                      'to_do_app',
+                      'Tasky',
                       style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
@@ -81,100 +98,72 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
                 const Spacer(),
 
-                const Center(
-                  child: Text(
-                    'Welcome To Tasky 👋🏻',
+                Image.asset(
+                  'assets/images/welcome_image.png',
+                  height: 220,
+                ),
+
+                const SizedBox(
+                  height: 30,
+                ),
+
+                const Text(
+                  'Welcome To Tasky',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 10,
+                ),
+
+                const Text(
+                  'Your daily task manager',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 30,
+                ),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Full Name',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 8),
-
-                const Center(
-                  child: Text(
-                    'Your productivity journey starts here.',
-                    style: TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
+                const SizedBox(
+                  height: 8,
                 ),
 
-                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: fullNameController,
+                  hintText: 'Enter your full name',
+                  validator: validateName,
+                ),
 
-                Center(
-                  child: Image.asset(
-                    'assets/images/welcome_image.png',
-                    width: 300,
-                    height: 300,
-                  ),
+                const SizedBox(
+                  height: 24,
+                ),
+
+                CustomButton(
+                  text: 'Get Started',
+                  onPressed: getStarted,
                 ),
 
                 const Spacer(),
-
-                const Text(
-                  'Full Name',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                TextFormField(
-                  controller: fullNameController,
-                  decoration: InputDecoration(
-                    hintText: 'e.g. Sarah Khalid',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: Color(0xff15B86C),
-                      ),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Full name is required';
-                    }
-
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 18),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: getStarted,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff15B86C),
-                      foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                    child: const Text(
-                      "Let's Get Started",style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      )
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

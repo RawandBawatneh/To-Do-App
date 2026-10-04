@@ -7,6 +7,8 @@ import 'package:to_do_app/models/task_model.dart';
 import 'package:to_do_app/models/user_model.dart';
 import 'package:to_do_app/screens/add_task_screen.dart';
 import 'package:to_do_app/tasky.dart';
+import 'package:to_do_app/widgets/custom_button.dart';
+import 'package:to_do_app/widgets/custom_task_item.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -192,124 +194,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return getUserImage() != null;
   }
 
-  Color getTaskTextColor(
+  Widget getTaskItem(
     TaskModel task,
   ) {
-    if (task.status == 'complete') {
-      return Colors.grey;
-    }
-
-    return Theme.of(context).textTheme.bodyLarge?.color ??
-        Colors.black;
-  }
-
-  TextDecoration getTaskDecoration(
-    TaskModel task,
-  ) {
-    if (task.status == 'complete') {
-      return TextDecoration.lineThrough;
-    }
-
-    return TextDecoration.none;
-  }
-
-  Widget buildTaskItem(
-    TaskModel task,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      margin: const EdgeInsets.only(
+    return Padding(
+      padding: const EdgeInsets.only(
         bottom: 10,
       ),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-        ),
-        borderRadius: BorderRadius.circular(
-          14,
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Checkbox(
-            value: task.status == 'complete',
-            onChanged: (value) {
-              handleTaskStatus(task);
-            },
-            activeColor: const Color(
-              0xff15B86C,
-            ),
-          ),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: () {
-                    changeDescriptionVisibility(
-                      task,
-                    );
-                  },
-                  child: Text(
-                    task.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: getTaskTextColor(
-                        task,
-                      ),
-                      decoration: getTaskDecoration(
-                        task,
-                      ),
-                    ),
-                  ),
-                ),
-
-                if (task.isHighPriority)
-                  const Padding(
-                    padding: EdgeInsets.only(
-                      top: 5,
-                    ),
-                    child: Text(
-                      'High Priority',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-
-                if (expandedTask == task)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 8,
-                    ),
-                    child: Text(
-                      task.description,
-                      style: TextStyle(
-                        color: task.status == 'complete'
-                            ? Colors.grey
-                            : null,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-
-          IconButton(
-            onPressed: () {
-              handleDeleteTask(
-                task,
-              );
-            },
-            icon: const Icon(
-              Icons.delete_outline,
-            ),
-          ),
-        ],
+      child: CustomTaskItem(
+        task: task,
+        showDescription: expandedTask == task,
+        onTitleTap: () {
+          changeDescriptionVisibility(
+            task,
+          );
+        },
+        onStatusChanged: () {
+          handleTaskStatus(
+            task,
+          );
+        },
+        onDelete: () {
+          handleDeleteTask(
+            task,
+          );
+        },
       ),
     );
   }
@@ -492,14 +401,19 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             if (highPriorityTasks.isEmpty)
-              const Text(
-                'No high priority tasks',
+              const Padding(
+                padding: EdgeInsets.only(
+                  bottom: 10,
+                ),
+                child: Text(
+                  'No high priority tasks',
+                ),
               ),
 
             ...List.generate(
               highPriorityTasks.length,
               (index) {
-                return buildTaskItem(
+                return getTaskItem(
                   highPriorityTasks[index],
                 );
               },
@@ -522,14 +436,19 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             if (tasks.isEmpty)
-              const Text(
-                'No tasks yet',
+              const Padding(
+                padding: EdgeInsets.only(
+                  bottom: 10,
+                ),
+                child: Text(
+                  'No tasks yet',
+                ),
               ),
 
             ...List.generate(
               tasks.length,
               (index) {
-                return buildTaskItem(
+                return getTaskItem(
                   tasks[index],
                 );
               },
@@ -539,25 +458,9 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 20,
             ),
 
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: openAddTaskScreen,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(
-                    0xff15B86C,
-                  ),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      20,
-                    ),
-                  ),
-                ),
-                child: const Text(
-                  'Add New Task',
-                ),
-              ),
+            CustomButton(
+              text: 'Add New Task',
+              onPressed: openAddTaskScreen,
             ),
 
             const SizedBox(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:to_do_app/app_string.dart';
 import 'package:to_do_app/models/task_model.dart';
+import 'package:to_do_app/widgets/custom_button.dart';
+import 'package:to_do_app/widgets/custom_text_field.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -24,14 +26,35 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     });
   }
 
- Future<void> createTask() async {
-  if (formKey.currentState!.validate()) {
-    final taskBox = Hive.box<TaskModel>(AppString.taskBox);
+  String? validateTitle(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter task title';
+    }
+
+    return null;
+  }
+
+  String? validateDescription(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter task description';
+    }
+
+    return null;
+  }
+
+  Future<void> createTask() async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
+    final taskBox = Hive.box<TaskModel>(
+      AppString.taskBox,
+    );
 
     await taskBox.add(
       TaskModel(
-        title: titleController.text,
-        description: descriptionController.text,
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
         status: 'TODO',
         isHighPriority: isHighPriority,
       ),
@@ -41,7 +64,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
     Navigator.pop(context);
   }
-}
 
   @override
   void dispose() {
@@ -54,7 +76,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add New Task'),
+        title: const Text(
+          'Add New Task',
+        ),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -74,26 +98,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
-
-                  TextFormField(
-                    controller: titleController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter task title',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Task title is required';
-                      }
-
-                      return null;
-                    },
+                  const SizedBox(
+                    height: 8,
                   ),
 
-                  const SizedBox(height: 20),
+                  CustomTextField(
+                    controller: titleController,
+                    hintText: 'Enter task title',
+                    validator: validateTitle,
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
 
                   const Text(
                     'Description',
@@ -103,63 +120,48 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
-
-                  TextFormField(
-                    controller: descriptionController,
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      hintText: 'Enter task description',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Description is required';
-                      }
-
-                      return null;
-                    },
+                  const SizedBox(
+                    height: 8,
                   ),
 
-                  const SizedBox(height: 20),
+                  CustomTextField(
+                    controller: descriptionController,
+                    hintText: 'Enter task description',
+                    validator: validateDescription,
+                    maxLines: 4,
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
 
                   Row(
                     children: [
                       Checkbox(
                         value: isHighPriority,
-                        activeColor: const Color(0xff15B86C),
                         onChanged: changePriority,
+                        activeColor: const Color(
+                          0xff15B86C,
+                        ),
                       ),
+
                       const Text(
                         'High Priority',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(
+                    height: 30,
+                  ),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: createTask,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff15B86C),
-                        foregroundColor: Theme.of(context).scaffoldBackgroundColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        'Create Task',
-                      ),
-                    ),
+                  CustomButton(
+                    text: 'Create Task',
+                    onPressed: createTask,
                   ),
                 ],
               ),
