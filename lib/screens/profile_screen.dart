@@ -229,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     trailing: Switch(
                       value: isDarkMode(),
                       onChanged: changeTheme,
-                      activeColor: const Color(
+                      activeThumbColor: const Color(
                         0xff15B86C,
                       ),
                     ),

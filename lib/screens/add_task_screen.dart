@@ -149,7 +149,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       Switch(
                         value: isHighPriority,
                         onChanged: changePriority,
-                        activeColor: const Color(
+                        activeThumbColor: const Color(
                           0xff15B86C,
                         ),
                       ),
