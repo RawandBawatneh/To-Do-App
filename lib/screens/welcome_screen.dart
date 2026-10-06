@@ -75,11 +75,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             child: Column(
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
                       'assets/images/tasky_logo.png',
-                      width: 36,
-                      height: 36,
+                      width: 40,
+                      height: 40,
                     ),
 
                     const SizedBox(
@@ -89,7 +90,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     const Text(
                       'Tasky',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

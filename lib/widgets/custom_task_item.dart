@@ -38,9 +38,7 @@ class CustomTaskItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-        ),
+        border: Border.all(color: Theme.of(context).dividerColor),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
@@ -72,12 +70,14 @@ class CustomTaskItem extends StatelessWidget {
                 ),
 
                 if (task.isHighPriority)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 5),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
                     child: Text(
                       'High Priority',
                       style: TextStyle(
-                        color: Colors.red,
+                        color: task.status == 'complete'
+                            ? Colors.grey
+                            : Colors.red,
                         fontSize: 12,
                       ),
                     ),
@@ -89,9 +89,7 @@ class CustomTaskItem extends StatelessWidget {
                     child: Text(
                       task.description,
                       style: TextStyle(
-                        color: task.status == 'complete'
-                            ? Colors.grey
-                            : null,
+                        color: task.status == 'complete' ? Colors.grey : null,
                         decoration: task.status == 'complete'
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
@@ -104,9 +102,7 @@ class CustomTaskItem extends StatelessWidget {
 
           IconButton(
             onPressed: onDelete,
-            icon: const Icon(
-              Icons.delete_outline,
-            ),
+            icon: const Icon(Icons.delete_outline),
           ),
         ],
       ),

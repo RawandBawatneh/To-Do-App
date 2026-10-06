@@ -77,9 +77,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Add New Task',
+          'New Task',
         ),
-        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -137,7 +136,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
                   Row(
                     children: [
-                      Checkbox(
+                      const Text(
+                        'High Priority',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Switch(
                         value: isHighPriority,
                         onChanged: changePriority,
                         activeColor: const Color(
@@ -145,13 +154,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         ),
                       ),
 
-                      const Text(
-                        'High Priority',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+
                     ],
                   ),
 

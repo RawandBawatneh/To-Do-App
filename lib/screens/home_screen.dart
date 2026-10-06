@@ -459,7 +459,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             CustomButton(
-              text: 'Add New Task',
+              text: 'Add Task',
+              icon: Icons.add,
               onPressed: openAddTaskScreen,
             ),
 

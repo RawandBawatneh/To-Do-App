@@ -156,7 +156,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         title: const Text(
           'User Details',
         ),
-        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
