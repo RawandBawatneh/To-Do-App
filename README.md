@@ -98,7 +98,6 @@ You can watch the application demo here:
 
 [Watch Demo](demo.mp4)
 
-> Make sure the video file is named `demo.mp4` and placed in the main project folder next to `README.md`.
 
 ---
 
