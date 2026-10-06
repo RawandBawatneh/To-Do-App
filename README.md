@@ -96,7 +96,7 @@ lib/
 
 You can watch the application demo here:
 
-[Watch Demo](demo.mp4)
+https://github.com/user-attachments/assets/4a3db9f1-0c58-4a44-9aed-f1f828e34f59
 
 
 ---
@@ -128,6 +128,9 @@ flutter run
 ```
 
 ---
+
+
+
 
 ## 📦 Main Packages
 
